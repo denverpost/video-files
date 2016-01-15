@@ -41,9 +41,10 @@ require('constants.php');
 $conn_id = ftp_connect($FTP_SERVER) or die("Couldn't connect to $ftp_server");
 ftp_login($conn_id,$FTP_USER_NAME,$FTP_USER_PASS);
 ftp_pasv($conn_id, TRUE);
-$year = date("Y");
-if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }
-ftp_chdir($conn_id, $FTP_DIRECTORY."/".$year);
+//$year = date("Y");
+//if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }
+//ftp_chdir($conn_id, $FTP_DIRECTORY."/".$year);
+ftp_chdir($conn_id, $FTP_DIRECTORY);
 
 
 
@@ -65,10 +66,7 @@ function slugify($text)
   // remove unwanted characters
   $text = preg_replace('~[^-\w]+~', '', $text);
 
-  if (empty($text))
-  {
-    return '';
-  }
+  if (empty($text)) return '';
 
   return $text;
 }
@@ -82,40 +80,45 @@ if(isset($_FILES["video"])) {
 
         //if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year.$project); }
 
-        if ($_FILES["video"]["type"]=="video/mp3"):
-            move_uploaded_file($_FILES["video"]["tmp_name"], $_FILES["video"]["name"]);
+        #if ($_FILES["video"]["type"]=="video/mp3"):
+        move_uploaded_file($_FILES["video"]["tmp_name"], $_FILES["video"]["name"]);
 
-            $path = $FTP_DIRECTORY."/".$_FILES["video"]["name"];
-            if (ftp_put($conn_id, $path, $_FILES["video"]["name"], FTP_BINARY)):
-                $filepath = "http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["video"]["name"];
-                echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
+        $path = $FTP_DIRECTORY."/".$_FILES["video"]["name"];
+        if (ftp_put($conn_id, $path, $_FILES["video"]["name"], FTP_BINARY)):
+            $filepath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["video"]["name"];
+            echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
+            
+            if ( ftp_put($conn_id, $path, $_FILES["image"]["name"], FTP_BINARY) ):
 
-                // Put together the markup for the freeform
-                $markup = file_get_contents('video.html');
-                $markup = str_replace('{{URL}}', $filepath, $markup);
 
-                if ( $_POST['title'] === '' ) $title = 'TITLE';
-                else $title = htmlspecialchars($_POST['title']);
-                $markup = str_replace('{{TITLE}}', $title, $markup);
-
-                if ( $_POST['description'] === '' ) $description = 'DESCRIPTION';
-                else $description = htmlspecialchars($_POST['description']);
-                $markup = str_replace('{{DESCRIPTION}}', $description, $markup);
-
-                if ( $_POST['keywords'] === '' ) $keywords = '';
-                else $thumbnail_url = htmlspecialchars($_POST['keywords']);
-                $markup = str_replace('{{KEYWORDS}}', $keywords, $markup);
-                file_put_contents('denverpost.mrsss', $markup);
-
-            else:
-                echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
             endif;
 
-            unlink($_FILES["video"]["name"]);     // delete the file in current folder
+            // Put together the markup for the freeform
+            $markup = file_get_contents('video.html');
+            $markup = str_replace('{{URL}}', $filepath, $markup);
 
-        else: 
-            echo "<div class='alerts' style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["video"]["type"]."</div>";
+            if ( $_POST['title'] === '' ) $title = 'TITLE';
+            else $title = htmlspecialchars($_POST['title']);
+            $markup = str_replace('{{TITLE}}', $title, $markup);
+
+            if ( $_POST['description'] === '' ) $description = 'DESCRIPTION';
+            else $description = htmlspecialchars($_POST['description']);
+            $markup = str_replace('{{DESCRIPTION}}', $description, $markup);
+
+            if ( $_POST['keywords'] === '' ) $keywords = '';
+            else $thumbnail_url = htmlspecialchars($_POST['keywords']);
+            $markup = str_replace('{{KEYWORDS}}', $keywords, $markup);
+            file_put_contents('denverpost.mrsss', $markup);
+
+        else:
+            echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
         endif;
+
+        unlink($_FILES["video"]["name"]);     // delete the file in current folder
+
+        #else: 
+        #    echo "<div class='alerts' style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["video"]["type"]."</div>";
+        #endif;
         echo "</div>";
     endif;
 ftp_close($conn_id);
