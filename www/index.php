@@ -99,7 +99,6 @@ if(isset($_FILES["video"])) {
 
             // Put together the markup for the freeform
             $markup = file_get_contents('video.html');
-            $markup = str_replace('{{URL}}', $filepath, $markup);
 
             if ( $_POST['title'] === '' ) $title = 'TITLE';
             else $title = htmlspecialchars($_POST['title']);
