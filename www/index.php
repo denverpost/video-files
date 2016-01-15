@@ -90,6 +90,7 @@ if(isset($_FILES["video"])) {
             echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
             
             if ( isset($_FILES["image"]["tmp_name"]) ):
+                $path = $FTP_DIRECTORY."/".$_FILES["image"]["name"];
                 if ( ftp_put($conn_id, $path, $_FILES["image"]["name"], FTP_BINARY) ):
                     $filepath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["image"]["name"];
                     echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
@@ -111,8 +112,13 @@ if(isset($_FILES["video"])) {
             if ( $_POST['keywords'] === '' ) $keywords = '';
             else $thumbnail_url = htmlspecialchars($_POST['keywords']);
             $markup = str_replace('{{KEYWORDS}}', $keywords, $markup);
-            file_put_contents('denverpost.mrsss', $markup);
+            file_put_contents('video.xml', $markup);
 
+            $path = $FTP_DIRECTORY.'/video.xml';
+            if ( ftp_put($conn_id, $path, 'video.xml', FTP_BINARY) ):
+                $filepath = 'http://extras.denverpost.com/media/video/inform/video.xml';
+                echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
+            endif;
         else:
             echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
         endif;
