@@ -10,7 +10,7 @@ error_reporting(-1);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Audio Uploader - The Denver Post</title>
+    <title>Video Uploader</title>
 
     <link rel="shortcut icon" href="http://extras.mnginteractive.com/live/media/favIcon/dpo/favicon.ico" type="image/x-icon" />
 
@@ -86,11 +86,11 @@ function slugify($text)
   return $text;
 }
 
-if(isset($_FILES["audio"])) {
+if(isset($_FILES["video"])) {
     echo "<div id='message'>";
-    if ($_FILES["audio"]["error"] > 0):
-        if ($_FILES["audio"]["error"]==4) { echo "<div style='background-color:red'>No file was chosen to be uploaded</div>"; exit; } // No image file was uploaded
-        else { echo "<div style='background-color:red'>Error Code: " . $_FILES["audio"]["error"] . "</div>"; exit; } // Another error occurred
+    if ($_FILES["video"]["error"] > 0):
+        if ($_FILES["video"]["error"]==4) { echo "<div style='background-color:red'>No file was chosen to be uploaded</div>"; exit; } // No file was uploaded
+        else { echo "<div style='background-color:red'>Error Code: " . $_FILES["video"]["error"] . "</div>"; exit; } // Another error occurred
     else :
         $project = '';
         if ( array_key_exists('project', $_POST) ):
@@ -99,16 +99,16 @@ if(isset($_FILES["audio"])) {
 
         if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year.$project); }
 
-        if ($_FILES["audio"]["type"]=="audio/mp3"):
-            move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"]);
+        if ($_FILES["video"]["type"]=="video/mp3"):
+            move_uploaded_file($_FILES["video"]["tmp_name"], $_FILES["video"]["name"]);
 
-            $path = $FTP_DIRECTORY."/".$year.$project.'/'.$_FILES["audio"]["name"];
-            if (ftp_put($conn_id, $path, $_FILES["audio"]["name"], FTP_BINARY)):
-                $filepath = "http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"];
+            $path = $FTP_DIRECTORY."/".$year.$project.'/'.$_FILES["video"]["name"];
+            if (ftp_put($conn_id, $path, $_FILES["video"]["name"], FTP_BINARY)):
+                $filepath = "http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["video"]["name"];
                 echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
 
                 // Put together the markup for the freeform
-                $markup = file_get_contents('audio.html');
+                $markup = file_get_contents('video.html');
                 $markup = str_replace('<', '&lt;', $markup);
                 $markup = str_replace('{{URL}}', $filepath, $markup);
 
@@ -129,10 +129,10 @@ if(isset($_FILES["audio"])) {
                 echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
             endif;
 
-            unlink($_FILES["audio"]["name"]);     // delete the file in current folder
+            unlink($_FILES["video"]["name"]);     // delete the file in current folder
 
         else: 
-            echo "<div class='alerts' style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["audio"]["type"]."</div>";
+            echo "<div class='alerts' style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["video"]["type"]."</div>";
         endif;
         echo "</div>";
     endif;
@@ -163,26 +163,31 @@ ftp_close($conn_id);
 <script src="js/jquery-ui.js"></script>
 
 <?php if ( isset($markup) ) echo $markup; ?>
-<h1>Audio File Uploader</h1>
+<h1>Video File Uploader</h1>
 <form action="" id="up" name="up" method="post" enctype="multipart/form-data">
-    <h2 style="display:none;">Describe the audio</h2>
+    <h2 style="display:none;">Describe the video</h2>
     <p id="project_label">
         <label for="project">Project Name:</label> <input name="project" id="project" type="text" maxlength="50" value="" />
     </p>
     <h5>Existing Projects</h5>
     <ul id="project_list"><?php foreach ( $project_list as $item ) echo $item; ?></ul>
     <hr noshade>
-    <p id="audio_label">
-        <label for="audio">Audio File:</label> <input name="audio" type="file" />
+    <p id="video_label">
+        <label for="video">Video File:</label> <input name="video" type="file" />
+    </p>
+    <p id="image_label">
+        <label for="image">Image Thunmbnail File:</label> <input name="image" type="file" />
     </p>
     <hr noshade>
     <p>These fields are optional:</p>
     <p id="title_label">
         <label for="title">Title:</label> <input name="title" id="title" type="text" maxlength="50" value="" />
     </p>
+<!--
     <p id="thumbnail_url_label">
         <label for="thumbnail_url">Thumbnail URL:</label> <input name="thumbnail_url" id="thumbnail_url" type="text" maxlength="100" value="" />
     </p>
+-->
     <p id="description_label">
         <label for="description">Description:</label> <input name="description" id="description" type="text" maxlength="500" value="" />
     </p>

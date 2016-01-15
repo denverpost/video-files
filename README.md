@@ -1,5 +1,5 @@
-# Audio Files
-An audio file uploader.
+# Video Files
+An video file uploader.
 ## Usage
 To make this work you need to add a file to the www directory named "constants.php" that has something like this in it:
 ```

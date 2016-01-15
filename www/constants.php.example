@@ -1,0 +1,5 @@
+<?php
+$FTP_SERVER    = "ftp.server.address";
+$FTP_USER_NAME = "";
+$FTP_USER_PASS = "";
+$FTP_DIRECTORY = "/path/to/dir";
