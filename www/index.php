@@ -117,6 +117,7 @@ if(isset($_FILES["video"])) {
             $markup = str_replace('{{IMAGE}}', $imagepath, $markup);
 
             $markup = str_replace('{{VIDEO}}', $videopath, $markup);
+            $markup = str_replace('{{TIMESTAMP}}', date('c', time()), $markup);
             file_put_contents('video.xml', $markup);
 
             $path = $FTP_DIRECTORY.'/video.xml';
