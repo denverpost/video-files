@@ -2,7 +2,6 @@
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 error_reporting(-1);
-// NOT MY CODE JUST WORKING WITH IT
 ?>
 <!DOCTYPE HTML>
 <html lang="en">
@@ -32,7 +31,6 @@ error_reporting(-1);
         }
         body { margin: 20px!important; }
     </style>
-    <link rel="stylesheet" type="text/css" href="http://extras.mnginteractive.com/live/css/site67/bartertown.css" />
     <script src="http://local.denverpost.com/common/jquery/jquery-min.js"></script>
 </head>
 <body>
@@ -47,17 +45,6 @@ $year = date("Y");
 if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }
 ftp_chdir($conn_id, $FTP_DIRECTORY."/".$year);
 
-
-// We'll need a list of the existing directories (i.e. projects)
-$file_and_dir_list = ftp_nlist($conn_id, ".");
-$project_list = Array();
-foreach ( $file_and_dir_list as $item ):
-    if ( strpos($item, '.') === FALSE ):
-        $item = '<li><a href="#" onClick="$(\'#project\').attr(\'value\', \'' . $item . '\');">' . $item . '</a></li>';
-        array_push($project_list, $item);
-    endif;
-endforeach;
-sort($project_list);
 
 
 
@@ -92,24 +79,19 @@ if(isset($_FILES["video"])) {
         if ($_FILES["video"]["error"]==4) { echo "<div style='background-color:red'>No file was chosen to be uploaded</div>"; exit; } // No file was uploaded
         else { echo "<div style='background-color:red'>Error Code: " . $_FILES["video"]["error"] . "</div>"; exit; } // Another error occurred
     else :
-        $project = '';
-        if ( array_key_exists('project', $_POST) ):
-            $project = '/' . slugify($_POST['project']);
-        endif;
 
-        if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year.$project); }
+        //if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year.$project); }
 
         if ($_FILES["video"]["type"]=="video/mp3"):
             move_uploaded_file($_FILES["video"]["tmp_name"], $_FILES["video"]["name"]);
 
-            $path = $FTP_DIRECTORY."/".$year.$project.'/'.$_FILES["video"]["name"];
+            $path = $FTP_DIRECTORY."/".$_FILES["video"]["name"];
             if (ftp_put($conn_id, $path, $_FILES["video"]["name"], FTP_BINARY)):
                 $filepath = "http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["video"]["name"];
                 echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
 
                 // Put together the markup for the freeform
                 $markup = file_get_contents('video.html');
-                $markup = str_replace('<', '&lt;', $markup);
                 $markup = str_replace('{{URL}}', $filepath, $markup);
 
                 if ( $_POST['title'] === '' ) $title = 'TITLE';
@@ -120,11 +102,11 @@ if(isset($_FILES["video"])) {
                 else $description = htmlspecialchars($_POST['description']);
                 $markup = str_replace('{{DESCRIPTION}}', $description, $markup);
 
-                if ( $_POST['thumbnail_url'] === '' ) $thumbnail_url = 'THUMBNAIL_URL';
-                else $thumbnail_url = htmlspecialchars($_POST['thumbnail_url']);
-                $markup = str_replace('{{THUMBNAIL_URL}}', $thumbnail_url, $markup);
+                if ( $_POST['keywords'] === '' ) $keywords = '';
+                else $thumbnail_url = htmlspecialchars($_POST['keywords']);
+                $markup = str_replace('{{KEYWORDS}}', $keywords, $markup);
+                file_put_contents('denverpost.mrsss', $markup);
 
-                $markup = '<pre>' . $markup . '</pre>';
             else:
                 echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
             endif;
@@ -178,19 +160,22 @@ ftp_close($conn_id);
     <p id="image_label">
         <label for="image">Image Thunmbnail File:</label> <input name="image" type="file" />
     </p>
-    <hr noshade>
-    <p>These fields are optional:</p>
     <p id="title_label">
         <label for="title">Title:</label> <input name="title" id="title" type="text" maxlength="50" value="" />
+    </p>
+    <p id="description_label">
+        <label for="description">Description:</label> <input name="description" id="description" type="text" maxlength="500" value="" />
+    </p>
+    <hr noshade>
+    <p>These fields are optional:</p>
+    <p id="keywords_label">
+        <label for="keywords">Keywords (comma-separated):</label> <input name="keywords" id="keywords" type="text" maxlength="500" value="" />
     </p>
 <!--
     <p id="thumbnail_url_label">
         <label for="thumbnail_url">Thumbnail URL:</label> <input name="thumbnail_url" id="thumbnail_url" type="text" maxlength="100" value="" />
     </p>
 -->
-    <p id="description_label">
-        <label for="description">Description:</label> <input name="description" id="description" type="text" maxlength="500" value="" />
-    </p>
    <input type="submit" name="submit" value="Upload">
 </form>
 </body>
