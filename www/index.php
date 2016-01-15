@@ -82,15 +82,18 @@ if(isset($_FILES["video"])) {
 
         #if ($_FILES["video"]["type"]=="video/mp3"):
         move_uploaded_file($_FILES["video"]["tmp_name"], $_FILES["video"]["name"]);
+        if ( isset($_FILES["image"]["tmp_name"]) ) move_uploaded_file($_FILES["image"]["tmp_name"], $_FILES["image"]["name"]);
 
         $path = $FTP_DIRECTORY."/".$_FILES["video"]["name"];
         if (ftp_put($conn_id, $path, $_FILES["video"]["name"], FTP_BINARY)):
             $filepath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["video"]["name"];
             echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
             
-            if ( ftp_put($conn_id, $path, $_FILES["image"]["name"], FTP_BINARY) ):
-
-
+            if ( isset($_FILES["image"]["tmp_name"]) ):
+                if ( ftp_put($conn_id, $path, $_FILES["image"]["name"], FTP_BINARY) ):
+                    $filepath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["image"]["name"];
+                    echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
+                endif;
             endif;
 
             // Put together the markup for the freeform
@@ -115,6 +118,7 @@ if(isset($_FILES["video"])) {
         endif;
 
         unlink($_FILES["video"]["name"]);     // delete the file in current folder
+        unlink($_FILES["image"]["name"]);     // delete the file in current folder
 
         #else: 
         #    echo "<div class='alerts' style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["video"]["type"]."</div>";
