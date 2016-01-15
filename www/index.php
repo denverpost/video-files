@@ -86,14 +86,14 @@ if(isset($_FILES["video"])) {
 
         $path = $FTP_DIRECTORY."/".$_FILES["video"]["name"];
         if (ftp_put($conn_id, $path, $_FILES["video"]["name"], FTP_BINARY)):
-            $filepath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["video"]["name"];
-            echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
+            $videopath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["video"]["name"];
+            echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $videopath . "</div>";
             
             if ( isset($_FILES["image"]["tmp_name"]) ):
                 $path = $FTP_DIRECTORY."/".$_FILES["image"]["name"];
                 if ( ftp_put($conn_id, $path, $_FILES["image"]["name"], FTP_BINARY) ):
-                    $filepath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["image"]["name"];
-                    echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
+                    $imagepath = "http://extras.denverpost.com/media/video/inform/" . $_FILES["image"]["name"];
+                    echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $imagepath . "</div>";
                 endif;
             endif;
 
@@ -110,8 +110,13 @@ if(isset($_FILES["video"])) {
             $markup = str_replace('{{DESCRIPTION}}', $description, $markup);
 
             if ( $_POST['keywords'] === '' ) $keywords = '';
-            else $thumbnail_url = htmlspecialchars($_POST['keywords']);
+            else $keywords = htmlspecialchars($_POST['keywords']);
             $markup = str_replace('{{KEYWORDS}}', $keywords, $markup);
+
+            if ( !isset($imagepath) ) $imagepath = '';
+            $markup = str_replace('{{IMAGE}}', $imagepath, $markup);
+
+            $markup = str_replace('{{VIDEO}}', $videopath, $markup);
             file_put_contents('video.xml', $markup);
 
             $path = $FTP_DIRECTORY.'/video.xml';
@@ -161,17 +166,19 @@ ftp_close($conn_id);
 <h1>Video File Uploader</h1>
 <form action="" id="up" name="up" method="post" enctype="multipart/form-data">
     <h2 style="display:none;">Describe the video</h2>
+<!--
     <p id="project_label">
         <label for="project">Project Name:</label> <input name="project" id="project" type="text" maxlength="50" value="" />
     </p>
     <h5>Existing Projects</h5>
-    <ul id="project_list"><?php foreach ( $project_list as $item ) echo $item; ?></ul>
+    <ul id="project_list"><?php //foreach ( $project_list as $item ) echo $item; ?></ul>
     <hr noshade>
+-->
     <p id="video_label">
         <label for="video">Video File:</label> <input name="video" type="file" />
     </p>
     <p id="image_label">
-        <label for="image">Image Thunmbnail File:</label> <input name="image" type="file" />
+        <label for="image">Image Thumbnail File:</label> <input name="image" type="file" />
     </p>
     <p id="title_label">
         <label for="title">Title:</label> <input name="title" id="title" type="text" maxlength="50" value="" />
