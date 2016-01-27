@@ -181,17 +181,26 @@ ftp_close($conn_id);
         <label for="image">Image Thumbnail File:</label> <input name="image" type="file" />
     </p>
     <p id="title_label">
-        <label for="title">Title:</label> <input name="title" id="title" type="text" maxlength="50" value="" />
+        <label for="title">Title:</label> <input name="title" id="title" type="text" maxlength="70" value="" />
     </p>
     <p id="description_label">
         <label for="description">Description:</label> <input name="description" id="description" type="text" maxlength="500" value="" />
     </p>
-    <hr noshade>
-    <p>These fields are optional:</p>
     <p id="keywords_label">
         <label for="keywords">Keywords (comma-separated):</label> <input name="keywords" id="keywords" type="text" maxlength="500" value="" />
     </p>
+    <pre>
+<a href="javascript:$('#keywords').attr('value', $('#keywords').attr('value') + 'dpnews,');">dpnews</a> - any news video without Molly
+<a href="javascript:$('#keywords').attr('value', $('#keywords').attr('value') + 'dpent,');">dpent</a> - any entertainment video without Molly
+<a href="javascript:$('#keywords').attr('value', $('#keywords').attr('value') + 'dptvmolly,');">dptvmolly</a> - anything with Molly
+<a href="javascript:$('#keywords').attr('value', $('#keywords').attr('value') + 'sportsshow,');">sportsshow</a> - anything from The Sports Show
+<a href="javascript:$('#keywords').attr('value', $('#keywords').attr('value') + 'dpmarijuana,');">dpmarijuana</a> - anything about marijuana
+<a href="javascript:$('#keywords').attr('value', $('#keywords').attr('value') + 'cannabistfull,');">cannabistfull</a> - the full episode of The Cannabist Show
+<a href="javascript:$('#keywords').attr('value', $('#keywords').attr('value') + 'culturs,');">culturs</a> - any Culturs video (you will probably never use this)
+</pre>
 <!--
+    <hr noshade>
+    <p>These fields are optional:</p>
     <p id="thumbnail_url_label">
         <label for="thumbnail_url">Thumbnail URL:</label> <input name="thumbnail_url" id="thumbnail_url" type="text" maxlength="100" value="" />
     </p>
