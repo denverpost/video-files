@@ -157,7 +157,7 @@ ftp_close($conn_id);
 <style>
 #uploadImage           { float: left; width: 220px; overflow: visible; }
 #uploadHere            { float: left; width: 600px; margin-top: 30px; }
-#message               { position: absolute; margin-top: 250px; }
+#message               { }
 #message div           { padding: 0px 10px; }
 .alerts
 {
