@@ -108,9 +108,20 @@ if(isset($_FILES["video"])) {
             else $description = htmlspecialchars($_POST['description']);
             $markup = str_replace('{{DESCRIPTION}}', $description, $markup);
 
+            // There's a field for all keywords, we also insert them as categories.
             if ( $_POST['keywords'] === '' ) $keywords = '';
-            else $keywords = htmlspecialchars($_POST['keywords']);
-            $markup = str_replace('{{KEYWORDS}}', $keywords, $markup);
+            else $keywords = explode(',', htmlspecialchars($_POST['keywords']));
+            $markup = str_replace('{{KEYWORDS}}', implode(',', $keywords), $markup);
+
+            $categories = '';
+            foreach ( $keywords as $keyword ):
+                if ( trim($keyword) !== '' ):
+                    $categories .= '<media:category>' . $keyword . '</media:category>';
+                endif;
+            endforeach;
+            $markup = str_replace('{{CATEGORIES}}', $categories, $markup);
+    
+            
 
             if ( !isset($imagepath) ) $imagepath = '';
             $markup = str_replace('{{IMAGE}}', $imagepath, $markup);
