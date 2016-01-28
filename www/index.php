@@ -2,7 +2,7 @@
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 ini_set('upload_max_filesize', '8000M');
-ini_set('post_max_size', '3000M');
+ini_set('post_max_size', '6000M');
 ini_set('max_input_time', 30000);
 ini_set('max_execution_time', 30000);
 error_reporting(-1);
