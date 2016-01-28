@@ -1,7 +1,7 @@
 <?php
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
-ini_set('upload_max_filesize', '6000M');
+ini_set('upload_max_filesize', '8000M');
 ini_set('post_max_size', '3000M');
 ini_set('max_input_time', 30000);
 ini_set('max_execution_time', 30000);
@@ -78,6 +78,8 @@ function slugify($text)
 if(isset($_FILES["video"])) {
     echo "<div id='message'>";
     if ($_FILES["video"]["error"] > 0):
+        // Here's a list of video error codes and what they mean:
+        // http://php.net/manual/en/features.file-upload.errors.php
         if ($_FILES["video"]["error"]==4) { echo "<div style='background-color:red'>No file was chosen to be uploaded</div>"; exit; } // No file was uploaded
         else { echo "<div style='background-color:red'>Error Code: " . $_FILES["video"]["error"] . ". Please email jmurphy@denverpost.com the contents of this error message.</div>"; exit; } // Another error occurred
     else :
