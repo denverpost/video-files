@@ -79,7 +79,7 @@ if(isset($_FILES["video"])) {
     echo "<div id='message'>";
     if ($_FILES["video"]["error"] > 0):
         if ($_FILES["video"]["error"]==4) { echo "<div style='background-color:red'>No file was chosen to be uploaded</div>"; exit; } // No file was uploaded
-        else { echo "<div style='background-color:red'>Error Code: " . $_FILES["video"]["error"] . "</div>"; exit; } // Another error occurred
+        else { echo "<div style='background-color:red'>Error Code: " . $_FILES["video"]["error"] . ". Please email jmurphy@denverpost.com the contents of this error message.</div>"; exit; } // Another error occurred
     else :
 
         //if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year.$project); }
