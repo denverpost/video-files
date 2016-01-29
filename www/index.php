@@ -1,8 +1,8 @@
 <?php
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
-ini_set('upload_max_filesize', '10000M');
-ini_set('post_max_size', '10000M');
+ini_set('upload_max_filesize', '20000M');
+ini_set('post_max_size', '20000M');
 ini_set('max_input_time', 30000);
 ini_set('max_execution_time', 30000);
 error_reporting(-1);
